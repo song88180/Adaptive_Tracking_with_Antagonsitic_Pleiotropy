@@ -1,0 +1,119 @@
+initialize() {
+  defineConstant("Ne",10000);
+  defineConstant("P_ben_max",0.25);
+  defineConstant("rep",1);
+  defineConstant("Name","quasi_pop"+Ne);
+  defineConstant("Root","../Simulation_log");
+  initializeMutationType("m1", 0.5, "f", 0.0); 
+  initializeMutationType("m0", 0.5, "f", 0.0); 
+  initializeGenomicElementType("g1", c(m1,m0), c(0.9,0.1));
+  initializeGenomicElement(g1, 0, 99999);
+  initializeMutationRate(5.5e-7);
+  rates = c();
+  ends = c();
+  initializeRecombinationRate(5e-7);
+  m0.convertToSubstitution = T;
+  m1.convertToSubstitution = T;
+  
+  if (! fileExists(Root + '/rep' + rep + '/'+ Name + '_20samples'))
+    createDirectory(Root + '/rep' + rep + '/'+ Name + '_20samples');
+ 
+  if (! fileExists('/home/siliang/Public/backup/' + Name + '_20samples'))
+    createDirectory('/home/siliang/Public/backup/' + Name + '_20samples');
+ 
+  if (! fileExists(Root + "/rep" + rep + "/History"))
+    createDirectory(Root + "/rep" + rep + "/History");
+}
+
+1 early() {
+  sim.addSubpop("p1", Ne);
+  p1.setValue('env_idx',0);
+  harshness = max(rnorm(1,1,0.15),0.0);
+  p1.setValue('harshness',harshness);
+}
+
+early() {
+  if( sim.generation % 100 == 0)
+    print(sim.generation);
+
+  if( runif(1) < 1/50){
+    muts = sim.mutationsOfType(m1);
+    env_idx = p1.getValue('env_idx');
+    env_idx = env_idx+1; 
+    p1.setValue('env_idx',env_idx);
+    harshness = max(rnorm(1,1,0.15), 0.0);
+    p1.setValue('harshness',harshness);
+    for (mut in muts){
+      beneficial_P = mut.getValue('P_ben');
+      selcoeff_size = mut.getValue('selcoeff_size');
+      if (selcoeff_size == 0) // neutral mutation
+        next;
+      selcoeff_size_env = selcoeff_size * harshness;
+      selcoeff = rgamma(1,selcoeff_size_env,10);
+      if (runif(1) > beneficial_P)
+        selcoeff = -selcoeff;
+      mut.setSelectionCoeff(selcoeff);
+    }
+  }
+} 
+
+mutation(m1){
+
+  P_ben_0 = 1.0-0.04/P_ben_max;  // so that mean P_ben = 0.02
+  if ( runif(1) < P_ben_0)
+    beneficial_P = 0;
+  else
+    beneficial_P = runif(1, min=0, max=P_ben_max);
+
+  //beneficial_P = 0;
+  mut.setValue('P_ben', beneficial_P);
+
+  selcoeff_size = rexp(1,mu=0.01);
+  harshness = p1.getValue('harshness');
+  selcoeff_size_env = selcoeff_size * harshness;
+  selcoeff = rgamma(1,selcoeff_size_env,10);  
+  if (runif(1) > beneficial_P){  // so that P ~ 0.02 when fitness=1
+    selcoeff = -selcoeff;
+  }
+  mut.setValue('selcoeff_size', selcoeff_size);
+  mut.setSelectionCoeff(selcoeff);
+  return mut;
+}
+
+mutation(m0){
+  mut.setValue('selcoeff_size', 0);
+  mut.setValue('P_ben',0);
+  mut.setMutationType(m1);
+  return mut;
+}
+
+late() {
+  muts = sim.mutations;
+  Freqs = sim.mutationFrequencies(p1,muts);
+  for (i in 0:(muts.length()-1)){
+    mut = muts[i];
+    if (mut.getValue('selcoeff_size') != 0)
+      mut.appendKeysAndValuesFrom(Dictionary('AF_history',Freqs[i], 'selcoeff_history', mut.selectionCoeff));
+  }
+}
+/*
+19000:20000 late(){
+  if (sim.generation%1000 == 0){
+    muts = sim.mutations;
+    N_gen = sim.generation;
+    sim.outputMutations(muts,Root + '/rep' + rep + '/' + Name + '_20samples/'+ Name + '_' + N_gen + '.txt');
+  }
+}
+*/
+20000:40000 late(){
+  N_gen = sim.generation;
+  if (N_gen % 1000 == 0){
+    muts = sim.mutations;
+    p1.genomes.outputMS('/home/siliang/Public/backup/' + Name + '_20samples/' + Name + '_genome_' + N_gen + '.txt' );
+    sim.outputMutations(muts,Root + '/rep' + rep + '/' + Name + '_20samples/'+ Name + '_' + N_gen + '.txt');
+  }
+}
+
+40000 late() {
+  sim.simulationFinished();
+}

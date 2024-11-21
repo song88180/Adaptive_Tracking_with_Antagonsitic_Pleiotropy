@@ -1,0 +1,111 @@
+initialize() {
+  defineConstant("Ne",10000);
+  //defineConstant("P_ben_max",0.25);
+  //defineConstant("rep",1);
+  defineConstant("Name","Adaptive");
+  defineConstant("Root","../Simulation_log");
+  initializeMutationType("m1", 0.5, "f", 0.0); 
+  initializeMutationType("m0", 0.5, "f", 0.0); 
+  initializeGenomicElementType("g1", c(m1,m0), c(0.9,0.1));
+  initializeGenomicElement(g1, 0, 159999);
+  initializeMutationRate(1e-7);
+  rates = c();
+  ends = c();
+  for (i in 1:15){
+    ends = c(ends, i*10000-1,i*10000);
+    rates = c(rates, 1e-4 , 0.5);
+  }
+  rates = c(rates, 1e-4);
+  ends = c(ends, 16*10000-1);
+  initializeRecombinationRate(rates, ends);
+  m0.convertToSubstitution = T;
+  m1.convertToSubstitution = T;
+  
+  if (! fileExists(Root + '/rep' + rep + '/'+ Name + '_20samples'))
+    createDirectory(Root + '/rep' + rep + '/'+ Name + '_20samples');
+  
+  if (! fileExists(Root + "/rep" + rep + "/History"))
+    createDirectory(Root + "/rep" + rep + "/History");
+}
+
+1 early() {
+  sim.addSubpop("p1", Ne);
+  p1.setValue('env_idx',0);
+  harshness = 1.0;
+  p1.setValue('harshness',harshness);
+}
+
+early() {
+  if( sim.generation % 1000 == 0)
+    print(sim.generation);
+} 
+
+mutation(m1){
+  beneficial_P = 0.02;
+  selcoeff_size = rexp(1,mu=0.01);
+  harshness = p1.getValue('harshness');
+  selcoeff_size_env = selcoeff_size * harshness;
+  selcoeff = rgamma(1,selcoeff_size_env,10);  
+  if (runif(1) > beneficial_P){
+    selcoeff = -selcoeff;
+  }
+  mut.setValue('selcoeff_size', selcoeff_size);
+  mut.setSelectionCoeff(selcoeff);
+  return mut;
+}
+
+mutation(m0){
+  mut.setValue('selcoeff_size', 0);
+  mut.setMutationType(m1);
+  return mut;
+}
+
+late() {
+/*
+  muts = sim.mutations;
+  Freqs = sim.mutationFrequencies(p1,muts);
+  for (i in 0:(muts.length()-1)){
+    mut = muts[i];
+    if (mut.getValue('selcoeff_size') != 0)
+      mut.appendKeysAndValuesFrom(Dictionary('AF_history',Freqs[i], 'selcoeff_history', mut.selectionCoeff));
+  }
+*/
+}
+
+180001:200000 late(){
+  if (sim.generation%1000 == 0){
+    muts = sim.mutations;
+    N_gen = sim.generation;
+    sim.outputMutations(muts,Root + '/rep' + rep + '/' + Name + '_20samples/'+ Name + '_' + N_gen + '.txt');
+  }
+}
+
+200000 late() {
+  sim.simulationFinished();
+  lines = 'ID,mean_selcoef,cur_selcoef,effective_selcoef,AF,isFixed,Gen_S,Gen_E';
+
+  for (type in c('muts', 'subs')){
+    if (type == 'muts'){
+      mutation_set = sim.mutations;
+      Freqs = sim.mutationFrequencies(p1,mutation_set);
+    }
+    else if (type == 'subs'){
+      mutation_set = sim.substitutions;
+    }
+    
+    i = 0;
+    for (mut in mutation_set){
+      mut_mean_selcoeff = mut.selectionCoeff;
+      mut_effective_selcoeff = mut.selectionCoeff;
+      
+      if (type == 'muts')
+        lines = c(lines, paste(mut.id, mut_mean_selcoeff, mut.selectionCoeff, mut_effective_selcoeff, Freqs[i], 'F', mut.originGeneration, -1, sep=','));
+      
+      else if (type == 'subs')
+        lines = c(lines, paste(mut.id, mut_mean_selcoeff, mut.selectionCoeff, mut_effective_selcoeff, 1, 'T', mut.originGeneration, mut.fixationGeneration, sep=','));
+      
+      i = i+1;
+    }
+  }
+  writeFile(Root + "/rep" + rep + "/Mutation_summary_" + Name + ".txt", lines);
+}

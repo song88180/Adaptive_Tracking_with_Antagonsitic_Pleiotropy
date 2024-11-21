@@ -1,0 +1,156 @@
+initialize() {
+  defineConstant("Ne",5000);
+  defineConstant("N_env",10);
+  defineConstant("P_ben_max",0.25);
+  //defineConstant("rep",1);
+  defineConstant("Name","quasi_env"+N_env);
+  defineConstant("Root","../Simulation_log");
+  initializeMutationType("m1", 0.5, "f", 0.0); 
+  initializeMutationType("m0", 0.5, "f", 0.0); 
+  initializeGenomicElementType("g1", c(m1,m0), c(0.9,0.1));
+  initializeGenomicElement(g1, 0, 159999);
+  initializeMutationRate(1e-7);
+  rates = c();
+  ends = c();
+  for (i in 1:15){
+    ends = c(ends, i*10000-1,i*10000);
+    rates = c(rates, 1e-4 , 0.5);
+  }
+  rates = c(rates, 1e-4);
+  ends = c(ends, 16*10000-1);
+  initializeRecombinationRate(rates, ends);
+  m0.convertToSubstitution = T;
+  m1.convertToSubstitution = T;
+  
+  if (! fileExists(Root + '/rep' + rep + '/'+ Name + '_20samples'))
+    createDirectory(Root + '/rep' + rep + '/'+ Name + '_20samples');
+  
+  if (! fileExists(Root + "/rep" + rep + "/History"))
+    createDirectory(Root + "/rep" + rep + "/History");
+}
+
+1 early() {
+  sim.addSubpop("p1", Ne);
+  p1.setValue('env_idx',0);
+  harshness_env = pmax(rnorm(N_env,1,0.15),0.0);
+  p1.setValue('harshness_env',harshness_env);
+}
+
+early() {
+  if( sim.generation % 1000 == 0)
+    print(sim.generation);
+
+  if( runif(1) < 1/50){
+    muts = sim.mutationsOfType(m1);
+    env_idx = p1.getValue('env_idx');
+    env_idx = (env_idx+1) % N_env; 
+    p1.setValue('env_idx',env_idx);
+    for (mut in muts){
+      selcoeff_env = mut.getValue('selcoeff_env');
+      mut.setSelectionCoeff(selcoeff_env[env_idx]);
+    }
+  }
+} 
+
+mutation(m1){
+  P_ben_0 = 1.0-0.04/P_ben_max;  // so that mean P_ben = 0.02
+  if ( runif(1) < P_ben_0)
+    beneficial_P = 0.0;
+  else
+    beneficial_P = runif(1, min=0, max=P_ben_max);
+  mut.setValue('P_ben', beneficial_P);
+
+  env_idx = p1.getValue('env_idx');
+  selcoeff_size = rexp(1,mu=0.01);
+  harshness_env = p1.getValue('harshness_env');
+  selcoeff_size_env = selcoeff_size * harshness_env;
+  selcoeff_env = rgamma(N_env,selcoeff_size_env,10);
+  idx = rbinom(N_env,1,beneficial_P) == 0;
+  selcoeff_env[idx] = -selcoeff_env[idx];
+  
+  mut.setValue('selcoeff_env', selcoeff_env);
+  mut.setSelectionCoeff(selcoeff_env[env_idx]);
+  return mut;
+}
+
+mutation(m0){
+  mut.setValue('selcoeff_env', rep(0.0,N_env));
+  mut.setValue('P_ben',0);
+  mut.setMutationType(m1);
+  return mut;
+}
+
+late() {
+  muts = sim.mutations;
+  Freqs = sim.mutationFrequencies(p1,muts);
+  for (i in 0:(muts.length()-1)){
+    mut = muts[i];
+    if (sum(mut.getValue('selcoeff_env')) != 0)
+      mut.appendKeysAndValuesFrom(Dictionary('AF_history',Freqs[i], 'selcoeff_history', mut.selectionCoeff));
+  }
+}
+
+180001:200000 late(){
+  if (sim.generation%1000 == 0){
+    muts = sim.mutations;
+    N_gen = sim.generation;
+    sim.outputMutations(muts,Root + '/rep' + rep + '/' + Name + '_20samples/'+ Name + '_' + N_gen + '.txt');
+  }
+}
+
+200000 late() {
+  sim.simulationFinished();
+  lines = 'ID,mean_selcoef,cur_selcoef,effective_selcoef,AF,isFixed,Gen_S,Gen_E';
+
+  for (type in c('muts', 'subs')){
+    if (type == 'muts'){
+      mutation_set = sim.mutations;
+      Freqs = sim.mutationFrequencies(p1,mutation_set);
+    }
+    else if (type == 'subs'){
+      mutation_set = sim.substitutions;
+    }
+    selcoeff_history_lines = '';
+    
+    i = 0;
+    for (mut in mutation_set){
+      beneficial_P = mut.getValue('P_ben');
+      selcoeff_env = mut.getValue('selcoeff_env');
+      if (sum(selcoeff_env) != 0){
+        mut_mean_selcoeff = product(1+selcoeff_env)^(1/N_env) - 1;
+      
+        AF_history = mut.getValue('AF_history');
+        selcoeff_history = mut.getValue('selcoeff_history');
+        effective_selcoeffs = selcoeff_history[(AF_history*2*Ne > 1/abs(selcoeff_history)) & ((1-AF_history)*2*Ne > 1/abs(selcoeff_history))];
+        if (length(effective_selcoeffs) > 0)
+          mut_effective_selcoeff = product(1+effective_selcoeffs)^(1/length(effective_selcoeffs)) - 1;
+        else
+          mut_effective_selcoeff = 'NA';
+        selcoeff_history_lines = c(selcoeff_history_lines, mut.id);
+        selcoeff_history_lines = c(selcoeff_history_lines, paste(mut.getValue('AF_history')));
+        selcoeff_history_lines = c(selcoeff_history_lines, paste(mut.getValue('selcoeff_history')),'');
+      }
+      else{
+        mut_mean_selcoeff = 0;
+        mut_effective_selcoeff = 0;
+        selcoeff_history_lines = c(selcoeff_history_lines,mut.id);
+        selcoeff_history_lines = c(selcoeff_history_lines,'-1\n0','');
+      }
+      
+      if (type == 'muts')
+        lines = c(lines, paste(mut.id, mut_mean_selcoeff, mut.selectionCoeff, mut_effective_selcoeff, Freqs[i], 'F', mut.originGeneration, -1, sep=','));
+      
+      else if (type == 'subs')
+        lines = c(lines, paste(mut.id, mut_mean_selcoeff, mut.selectionCoeff, mut_effective_selcoeff, 1, 'T', mut.originGeneration, mut.fixationGeneration, sep=','));
+        
+      
+      i = i+1;
+    }
+    
+    if (type == 'muts')
+      writeFile(Root + "/rep" + rep + "/History/PM_history_" + Name + ".txt", selcoeff_history_lines);
+    else if (type == 'subs')
+      writeFile(Root + "/rep" + rep + "/History/Sub_history_" + Name + ".txt", selcoeff_history_lines);
+  }
+  writeFile(Root + "/rep" + rep + "/Mutation_summary_" + Name + ".txt", lines);
+}
