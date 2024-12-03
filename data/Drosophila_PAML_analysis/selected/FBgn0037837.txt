@@ -1,0 +1,110 @@
+CODONML (in paml version 4.9j, February 2020)  ../final_alignment/NT_alignment_filtered/FBgn0037837_NT.aln
+Model: several dN/dS ratios for branches, 
+Codon frequency model: F3x4
+ns =   3  ls = 263
+
+Codon usage in sequences
+--------------------------------------------------------------------------------------
+Phe TTT   6   8   6 | Ser TCT   1   0   2 | Tyr TAT   4   4   3 | Cys TGT   4   3   4
+    TTC   8   7   9 |     TCC   9   8   8 |     TAC   1   1   3 |     TGC   3   4   2
+Leu TTA   0   0   0 |     TCA   2   3   2 | *** TAA   0   0   0 | *** TGA   0   0   0
+    TTG   3   4   3 |     TCG   0   2   2 |     TAG   0   0   0 | Trp TGG   3   3   3
+--------------------------------------------------------------------------------------
+Leu CTT   6   5   3 | Pro CCT   0   0   0 | His CAT   1   1   1 | Arg CGT   1   1   0
+    CTC   5   6   6 |     CCC   5   5   5 |     CAC   3   3   3 |     CGC   3   3   4
+    CTA   1   1   1 |     CCA   4   3   4 | Gln CAA   3   4   3 |     CGA   1   1   1
+    CTG   9   9  13 |     CCG   1   1   1 |     CAG   3   3   3 |     CGG   1   1   2
+--------------------------------------------------------------------------------------
+Ile ATT   8   6   9 | Thr ACT   0   1   3 | Asn AAT   7   7   6 | Ser AGT   6   6   7
+    ATC   4   4   1 |     ACC   6   6   5 |     AAC   4   3   4 |     AGC   3   2   2
+    ATA   8   9   8 |     ACA   5   5   3 | Lys AAA  11  11   9 | Arg AGA   7   5   5
+Met ATG   7   7   7 |     ACG   3   3   3 |     AAG  11  11  13 |     AGG   2   4   3
+--------------------------------------------------------------------------------------
+Val GTT   4   5   4 | Ala GCT   4   3   3 | Asp GAT  13  14  13 | Gly GGT   3   2   1
+    GTC   4   2   4 |     GCC   4   4   3 |     GAC   8   7   9 |     GGC   5   6   6
+    GTA   3   2   2 |     GCA   3   3   2 | Glu GAA  11  10  10 |     GGA   4   4   2
+    GTG   6   8   6 |     GCG   1   1   3 |     GAG   6   7   8 |     GGG   1   1   2
+--------------------------------------------------------------------------------------
+
+Codon position x base (3x4) table for each sequence.
+
+#1: Dsec:FBgn0037837
+position  1:    T:0.16730    C:0.17871    A:0.34981    G:0.30418
+position  2:    T:0.31179    C:0.18251    A:0.32700    G:0.17871
+position  3:    T:0.25856    C:0.28517    A:0.23954    G:0.21673
+Average         T:0.24588    C:0.21546    A:0.30545    G:0.23321
+
+#2: Dmel:FBgn0037837
+position  1:    T:0.17871    C:0.17871    A:0.34221    G:0.30038
+position  2:    T:0.31559    C:0.18251    A:0.32700    G:0.17490
+position  3:    T:0.25095    C:0.26996    A:0.23194    G:0.24715
+Average         T:0.24842    C:0.21039    A:0.30038    G:0.24081
+
+#3: Dere:FBgn0037837
+position  1:    T:0.17871    C:0.19011    A:0.33460    G:0.29658
+position  2:    T:0.31179    C:0.18631    A:0.33460    G:0.16730
+position  3:    T:0.24715    C:0.28137    A:0.19772    G:0.27376
+Average         T:0.24588    C:0.21926    A:0.28897    G:0.24588
+
+Sums of codon usage counts
+------------------------------------------------------------------------------
+Phe F TTT      20 | Ser S TCT       3 | Tyr Y TAT      11 | Cys C TGT      11
+      TTC      24 |       TCC      25 |       TAC       5 |       TGC       9
+Leu L TTA       0 |       TCA       7 | *** * TAA       0 | *** * TGA       0
+      TTG      10 |       TCG       4 |       TAG       0 | Trp W TGG       9
+------------------------------------------------------------------------------
+Leu L CTT      14 | Pro P CCT       0 | His H CAT       3 | Arg R CGT       2
+      CTC      17 |       CCC      15 |       CAC       9 |       CGC      10
+      CTA       3 |       CCA      11 | Gln Q CAA      10 |       CGA       3
+      CTG      31 |       CCG       3 |       CAG       9 |       CGG       4
+------------------------------------------------------------------------------
+Ile I ATT      23 | Thr T ACT       4 | Asn N AAT      20 | Ser S AGT      19
+      ATC       9 |       ACC      17 |       AAC      11 |       AGC       7
+      ATA      25 |       ACA      13 | Lys K AAA      31 | Arg R AGA      17
+Met M ATG      21 |       ACG       9 |       AAG      35 |       AGG       9
+------------------------------------------------------------------------------
+Val V GTT      13 | Ala A GCT      10 | Asp D GAT      40 | Gly G GGT       6
+      GTC      10 |       GCC      11 |       GAC      24 |       GGC      17
+      GTA       7 |       GCA       8 | Glu E GAA      31 |       GGA      10
+      GTG      20 |       GCG       5 |       GAG      21 |       GGG       4
+------------------------------------------------------------------------------
+
+
+Codon position x base (3x4) table, overall
+
+position  1:    T:0.17490    C:0.18251    A:0.34221    G:0.30038
+position  2:    T:0.31305    C:0.18378    A:0.32953    G:0.17364
+position  3:    T:0.25222    C:0.27883    A:0.22307    G:0.24588
+Average         T:0.24673    C:0.21504    A:0.29827    G:0.23997
+
+
+Nei & Gojobori 1986. dN/dS (dN, dS)
+(Note: This matrix is not used in later ML. analysis.
+Use runmode = -2 for ML pairwise comparison.)
+
+Dsec:FBgn0037837    
+Dmel:FBgn0037837     0.1265 (0.0165 0.1303)
+Dere:FBgn0037837     0.1197 (0.0411 0.3431) 0.1236 (0.0359 0.2908)
+
+pairwise comparison, codon frequencies: F3x4.
+
+
+2 (Dmel:FBgn0037837) ... 1 (Dsec:FBgn0037837)
+lnL =-1209.297467
+  0.13125  0.80700  0.11438
+
+t= 0.1313  S=   172.4  N=   616.6  dN/dS=  0.1144  dN = 0.0163  dS = 0.1421
+
+
+3 (Dere:FBgn0037837) ... 1 (Dsec:FBgn0037837)
+lnL =-1344.759088
+  0.33395  1.15802  0.11730
+
+t= 0.3339  S=   181.8  N=   607.2  dN/dS=  0.1173  dN = 0.0407  dS = 0.3471
+
+
+3 (Dere:FBgn0037837) ... 2 (Dmel:FBgn0037837)
+lnL =-1322.109788
+  0.28576  1.25583  0.12221
+
+t= 0.2858  S=   183.9  N=   605.1  dN/dS=  0.1222  dN = 0.0356  dS = 0.2915

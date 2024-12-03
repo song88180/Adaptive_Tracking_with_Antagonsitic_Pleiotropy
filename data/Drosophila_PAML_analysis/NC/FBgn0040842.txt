@@ -1,0 +1,138 @@
+CODONML (in paml version 4.9j, February 2020)  ../final_alignment/NT_alignment_NC_filtered/FBgn0040842_NT.aln
+Model: several dN/dS ratios for branches, 
+Codon frequency model: F3x4
+ns =   4  ls =  63
+
+Codon usage in sequences
+------------------------------------------------------------------------------------------------------
+Phe TTT   0   0   0   0 | Ser TCT   1   0   1   1 | Tyr TAT   0   0   0   0 | Cys TGT   0   0   0   0
+    TTC   3   3   3   4 |     TCC   1   2   1   1 |     TAC   2   2   2   2 |     TGC   1   1   1   1
+Leu TTA   0   0   0   0 |     TCA   0   0   0   0 | *** TAA   0   0   0   0 | *** TGA   0   0   0   0
+    TTG   1   1   0   0 |     TCG   0   0   0   0 |     TAG   0   0   0   0 | Trp TGG   0   0   0   0
+------------------------------------------------------------------------------------------------------
+Leu CTT   1   1   1   1 | Pro CCT   1   1   1   1 | His CAT   0   0   0   0 | Arg CGT   1   1   1   1
+    CTC   3   3   4   3 |     CCC   2   2   2   2 |     CAC   0   0   0   0 |     CGC   0   0   0   0
+    CTA   1   0   1   1 |     CCA   0   0   0   0 | Gln CAA   0   0   0   0 |     CGA   0   0   0   0
+    CTG   5   6   6   6 |     CCG   1   1   1   1 |     CAG   4   4   4   4 |     CGG   0   0   0   0
+------------------------------------------------------------------------------------------------------
+Ile ATT   2   1   1   1 | Thr ACT   0   0   0   0 | Asn AAT   1   1   1   1 | Ser AGT   0   0   0   0
+    ATC   4   5   4   4 |     ACC   1   1   1   1 |     AAC   0   0   0   0 |     AGC   0   0   0   0
+    ATA   0   0   0   0 |     ACA   0   0   0   0 | Lys AAA   0   0   0   0 | Arg AGA   0   0   0   0
+Met ATG   2   2   2   2 |     ACG   0   0   0   0 |     AAG   7   7   7   7 |     AGG   0   0   0   0
+------------------------------------------------------------------------------------------------------
+Val GTT   0   0   0   0 | Ala GCT   1   0   2   1 | Asp GAT   4   2   3   3 | Gly GGT   1   0   1   1
+    GTC   1   1   1   1 |     GCC   5   6   4   5 |     GAC   1   3   2   2 |     GGC   1   2   1   1
+    GTA   0   0   0   0 |     GCA   0   0   0   0 | Glu GAA   0   0   0   0 |     GGA   0   0   0   0
+    GTG   3   3   3   3 |     GCG   0   0   0   0 |     GAG   1   1   1   1 |     GGG   0   0   0   0
+------------------------------------------------------------------------------------------------------
+
+Codon position x base (3x4) table for each sequence.
+
+#1: Dmel:FBgn0040842
+position  1:    T:0.14286    C:0.30159    A:0.26984    G:0.28571
+position  2:    T:0.41270    C:0.20635    A:0.31746    G:0.06349
+position  3:    T:0.20635    C:0.39683    A:0.01587    G:0.38095
+Average         T:0.25397    C:0.30159    A:0.20106    G:0.24339
+
+#2: Dere:FBgn0040842
+position  1:    T:0.14286    C:0.30159    A:0.26984    G:0.28571
+position  2:    T:0.41270    C:0.20635    A:0.31746    G:0.06349
+position  3:    T:0.11111    C:0.49206    A:0.00000    G:0.39683
+Average         T:0.22222    C:0.33333    A:0.19577    G:0.24868
+
+#3: Dsim:FBgn0040842
+position  1:    T:0.12698    C:0.33333    A:0.25397    G:0.28571
+position  2:    T:0.41270    C:0.20635    A:0.31746    G:0.06349
+position  3:    T:0.19048    C:0.41270    A:0.01587    G:0.38095
+Average         T:0.24339    C:0.31746    A:0.19577    G:0.24339
+
+#4: Dsec:FBgn0040842
+position  1:    T:0.14286    C:0.31746    A:0.25397    G:0.28571
+position  2:    T:0.41270    C:0.20635    A:0.31746    G:0.06349
+position  3:    T:0.17460    C:0.42857    A:0.01587    G:0.38095
+Average         T:0.24339    C:0.31746    A:0.19577    G:0.24339
+
+Sums of codon usage counts
+------------------------------------------------------------------------------
+Phe F TTT       0 | Ser S TCT       3 | Tyr Y TAT       0 | Cys C TGT       0
+      TTC      13 |       TCC       5 |       TAC       8 |       TGC       4
+Leu L TTA       0 |       TCA       0 | *** * TAA       0 | *** * TGA       0
+      TTG       2 |       TCG       0 |       TAG       0 | Trp W TGG       0
+------------------------------------------------------------------------------
+Leu L CTT       4 | Pro P CCT       4 | His H CAT       0 | Arg R CGT       4
+      CTC      13 |       CCC       8 |       CAC       0 |       CGC       0
+      CTA       3 |       CCA       0 | Gln Q CAA       0 |       CGA       0
+      CTG      23 |       CCG       4 |       CAG      16 |       CGG       0
+------------------------------------------------------------------------------
+Ile I ATT       5 | Thr T ACT       0 | Asn N AAT       4 | Ser S AGT       0
+      ATC      17 |       ACC       4 |       AAC       0 |       AGC       0
+      ATA       0 |       ACA       0 | Lys K AAA       0 | Arg R AGA       0
+Met M ATG       8 |       ACG       0 |       AAG      28 |       AGG       0
+------------------------------------------------------------------------------
+Val V GTT       0 | Ala A GCT       4 | Asp D GAT      12 | Gly G GGT       3
+      GTC       4 |       GCC      20 |       GAC       8 |       GGC       5
+      GTA       0 |       GCA       0 | Glu E GAA       0 |       GGA       0
+      GTG      12 |       GCG       0 |       GAG       4 |       GGG       0
+------------------------------------------------------------------------------
+
+
+Codon position x base (3x4) table, overall
+
+position  1:    T:0.13889    C:0.31349    A:0.26190    G:0.28571
+position  2:    T:0.41270    C:0.20635    A:0.31746    G:0.06349
+position  3:    T:0.17063    C:0.43254    A:0.01190    G:0.38492
+Average         T:0.24074    C:0.31746    A:0.19709    G:0.24471
+
+
+Nei & Gojobori 1986. dN/dS (dN, dS)
+(Note: This matrix is not used in later ML. analysis.
+Use runmode = -2 for ML pairwise comparison.)
+
+Dmel:FBgn0040842    
+Dere:FBgn0040842    -1.0000 (0.0000 0.2260)
+Dsim:FBgn0040842     0.0774 (0.0071 0.0911) 0.0421 (0.0071 0.1676)
+Dsec:FBgn0040842     0.2085 (0.0141 0.0678) 0.0993 (0.0141 0.1424) 0.3253 (0.0071 0.0217)
+
+pairwise comparison, codon frequencies: F3x4.
+
+
+2 (Dere:FBgn0040842) ... 1 (Dmel:FBgn0040842)
+lnL = -251.865200
+  0.22776 999.00000  0.00100
+
+t= 0.2278  S=    45.5  N=   143.5  dN/dS=  0.0010  dN = 0.0003  dS = 0.3146
+
+
+3 (Dsim:FBgn0040842) ... 1 (Dmel:FBgn0040842)
+lnL = -252.706167
+  0.09158  6.87194  0.07177
+
+t= 0.0916  S=    47.3  N=   141.7  dN/dS=  0.0718  dN = 0.0072  dS = 0.1003
+
+
+3 (Dsim:FBgn0040842) ... 2 (Dere:FBgn0040842)
+lnL = -257.778759
+  0.17266 14.86372  0.03015
+
+t= 0.1727  S=    42.3  N=   146.7  dN/dS=  0.0302  dN = 0.0070  dS = 0.2328
+
+
+4 (Dsec:FBgn0040842) ... 1 (Dmel:FBgn0040842)
+lnL = -253.992215
+  0.08789  7.72883  0.19358
+
+t= 0.0879  S=    46.8  N=   142.2  dN/dS=  0.1936  dN = 0.0144  dS = 0.0745
+
+
+4 (Dsec:FBgn0040842) ... 2 (Dere:FBgn0040842)
+lnL = -259.503169
+  0.16015 14.89314  0.07127
+
+t= 0.1602  S=    40.9  N=   148.1  dN/dS=  0.0713  dN = 0.0140  dS = 0.1962
+
+
+4 (Dsec:FBgn0040842) ... 3 (Dsim:FBgn0040842)
+lnL = -241.087588
+  0.03468 999.00000  0.32543
+
+t= 0.0347  S=    51.7  N=   137.3  dN/dS=  0.3254  dN = 0.0074  dS = 0.0227
