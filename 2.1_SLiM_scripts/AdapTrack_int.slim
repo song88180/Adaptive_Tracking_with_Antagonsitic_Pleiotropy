@@ -1,14 +1,12 @@
 initialize() {
   defineConstant("Ne",10000);
+  //defineConstant("interval",25);
   defineConstant("P_ben_max",0.25);
   //defineConstant("rep",1);
-  defineConstant("Name","quasi_dom");
+  defineConstant("Name","AdapTrack_int"+interval);
   defineConstant("Root","../Simulation_log");
-
-  initializeMutationType("m3", 0.75, "f", 0.0); //beneficial
-  initializeMutationType("m2", 0.25, "f", 0.0); //deleterious
-  initializeMutationType("m1", 0.5, "f", 0.0);
-  initializeMutationType("m0", 0.5, "f", 0.0);
+  initializeMutationType("m1", 0.5, "f", 0.0); 
+  initializeMutationType("m0", 0.5, "f", 0.0); 
   initializeGenomicElementType("g1", c(m1,m0), c(0.9,0.1));
   initializeGenomicElement(g1, 0, 159999);
   initializeMutationRate(1e-7);
@@ -42,8 +40,8 @@ early() {
   if( sim.generation % 1000 == 0)
     print(sim.generation);
 
-  if( runif(1) < 1/50){
-    muts = sim.mutations;
+  if( runif(1) < 1/interval){
+    muts = sim.mutationsOfType(m1);
     env_idx = p1.getValue('env_idx');
     env_idx = env_idx+1; 
     p1.setValue('env_idx',env_idx);
@@ -56,11 +54,8 @@ early() {
         next;
       selcoeff_size_env = selcoeff_size * harshness;
       selcoeff = rgamma(1,selcoeff_size_env,10);
-      if (runif(1) > beneficial_P){
+      if (runif(1) > beneficial_P)
         selcoeff = -selcoeff;
-        mut.setMutationType(m2); 
-      }
-      else mut.setMutationType(m3);
       mut.setSelectionCoeff(selcoeff);
     }
   }
@@ -80,9 +75,7 @@ mutation(m1){
   selcoeff = rgamma(1,selcoeff_size_env,10);  
   if (runif(1) > beneficial_P){  // so that P ~ 0.02 when fitness=1
     selcoeff = -selcoeff;
-    mut.setMutationType(m2);
   }
-  else mut.setMutationType(m3);
   mut.setValue('selcoeff_size', selcoeff_size);
   mut.setSelectionCoeff(selcoeff);
   return mut;
@@ -91,7 +84,7 @@ mutation(m1){
 mutation(m0){
   mut.setValue('selcoeff_size', 0);
   mut.setValue('P_ben',0);
-  //mut.setMutationType(m1);
+  mut.setMutationType(m1);
   return mut;
 }
 

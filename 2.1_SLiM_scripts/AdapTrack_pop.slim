@@ -1,25 +1,28 @@
 initialize() {
-  defineConstant("Ne",50000);
+  defineConstant("Ne",10000);
   defineConstant("P_ben_max",0.25);
-  defineConstant("rep",7);
-  defineConstant("Name","quasi_pop"+Ne);
+  defineConstant("rep",1);
+  defineConstant("Name","AdapTrack_pop"+Ne);
   defineConstant("Root","../Simulation_log");
   initializeMutationType("m1", 0.5, "f", 0.0); 
   initializeMutationType("m0", 0.5, "f", 0.0); 
   initializeGenomicElementType("g1", c(m1,m0), c(0.9,0.1));
-  initializeGenomicElement(g1, 0, 159999);
-  initializeMutationRate(1e-7);
+  initializeGenomicElement(g1, 0, 99999);
+  initializeMutationRate(5.5e-7);
   rates = c();
   ends = c();
-  for (i in 1:15){
-    ends = c(ends, i*10000-1,i*10000);
-    rates = c(rates, 1e-4 , 0.5);
-  }
-  rates = c(rates, 1e-4);
-  ends = c(ends, 16*10000-1);
-  initializeRecombinationRate(rates, ends);
+  initializeRecombinationRate(5e-7);
   m0.convertToSubstitution = T;
   m1.convertToSubstitution = T;
+  
+  if (! fileExists(Root + '/rep' + rep + '/'+ Name + '_20samples'))
+    createDirectory(Root + '/rep' + rep + '/'+ Name + '_20samples');
+ 
+  if (! fileExists('/home/siliang/Public/backup/' + Name + '_20samples'))
+    createDirectory('/home/siliang/Public/backup/' + Name + '_20samples');
+ 
+  if (! fileExists(Root + "/rep" + rep + "/History"))
+    createDirectory(Root + "/rep" + rep + "/History");
 }
 
 1 early() {
@@ -30,7 +33,7 @@ initialize() {
 }
 
 early() {
-  if( sim.generation % 1000 == 0)
+  if( sim.generation % 100 == 0)
     print(sim.generation);
 
   if( runif(1) < 1/50){
@@ -55,11 +58,14 @@ early() {
 } 
 
 mutation(m1){
+
   P_ben_0 = 1.0-0.04/P_ben_max;  // so that mean P_ben = 0.02
   if ( runif(1) < P_ben_0)
     beneficial_P = 0;
   else
     beneficial_P = runif(1, min=0, max=P_ben_max);
+
+  //beneficial_P = 0;
   mut.setValue('P_ben', beneficial_P);
 
   selcoeff_size = rexp(1,mu=0.01);
@@ -82,7 +88,6 @@ mutation(m0){
 }
 
 late() {
-/*
   muts = sim.mutations;
   Freqs = sim.mutationFrequencies(p1,muts);
   for (i in 0:(muts.length()-1)){
@@ -90,22 +95,25 @@ late() {
     if (mut.getValue('selcoeff_size') != 0)
       mut.appendKeysAndValuesFrom(Dictionary('AF_history',Freqs[i], 'selcoeff_history', mut.selectionCoeff));
   }
+}
+/*
+19000:20000 late(){
+  if (sim.generation%1000 == 0){
+    muts = sim.mutations;
+    N_gen = sim.generation;
+    sim.outputMutations(muts,Root + '/rep' + rep + '/' + Name + '_20samples/'+ Name + '_' + N_gen + '.txt');
+  }
+}
 */
+20000:40000 late(){
+  N_gen = sim.generation;
+  if (N_gen % 1000 == 0){
+    muts = sim.mutations;
+    p1.genomes.outputMS('/home/siliang/Public/backup/' + Name + '_20samples/' + Name + '_genome_' + N_gen + '.txt' );
+    sim.outputMutations(muts,Root + '/rep' + rep + '/' + Name + '_20samples/'+ Name + '_' + N_gen + '.txt');
+  }
 }
 
-200000 late() {
+40000 late() {
   sim.simulationFinished();
-  sim.outputFull('./popstate_rep' +rep+ '.txt');
-  
-  i = 0;
-  lines = 'ID,selcoeff_size,P_ben'; 
-  muts = sim.mutations;
-  for (mut in muts){
-    selcoeff_size = mut.getValue('selcoeff_size');
-    P_ben = mut.getValue('P_ben');
-    lines = c(lines, paste(mut.id, selcoeff_size, P_ben,sep=','));
-    i = i+1;
-  }
-
-  writeFile("./selcoeff_size_rep" +rep+ ".txt", lines);
 }

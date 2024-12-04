@@ -1,13 +1,13 @@
 initialize() {
   defineConstant("Ne",10000);
-  //defineConstant("lambda", 10);
+  //defineConstant("F_neu",0.1);
   defineConstant("P_ben_max",0.25);
   //defineConstant("rep",1);
-  defineConstant("Name","quasi_lambda"+lambda);
+  defineConstant("Name","AdapTrack_neufrac"+F_neu);
   defineConstant("Root","../Simulation_log");
   initializeMutationType("m1", 0.5, "f", 0.0); 
   initializeMutationType("m0", 0.5, "f", 0.0); 
-  initializeGenomicElementType("g1", c(m1,m0), c(0.9,0.1));
+  initializeGenomicElementType("g1", c(m1,m0), c(1-F_neu,F_neu));
   initializeGenomicElement(g1, 0, 159999);
   initializeMutationRate(1e-7);
   rates = c();
@@ -39,32 +39,22 @@ initialize() {
 early() {
   if( sim.generation % 1000 == 0)
     print(sim.generation);
- 
-  P_ben2del = rexp(1,1.0/lambda);
-  while (P_ben2del > 1)
-    P_ben2del = rexp(1,1.0/lambda);
-  P_del2ben = (0.02/0.14)*P_ben2del; //14% mutations can be either beneficial or deleterious.
 
-  muts = sim.mutations;
-  env_idx = p1.getValue('env_idx');
-  env_idx = env_idx+1;
-  p1.setValue('env_idx',env_idx);
-  harshness = pmax(rnorm(1,1,0.15), 0.0);
-  p1.setValue('harshness',harshness);
-  for (mut in muts){
-    selcoeff_size = mut.getValue('selcoeff_size');
-    beneficial_P = mut.getValue('P_ben');
-    if (selcoeff_size == 0.0)
-      next;
-    selcoeff_size_env = selcoeff_size * harshness;
-    selcoeff = rgamma(1,selcoeff_size_env,10);
-    if (beneficial_P == 0.0)                // mutations always deleterious
-      mut.setSelectionCoeff(-selcoeff);
-    else{
-      selcoeff_cur = mut.selectionCoeff;
-      if ((selcoeff_cur > 0.0) & (runif(1) < P_ben2del))
-        selcoeff = -selcoeff;
-      if ((selcoeff_cur < 0.0) & (runif(1) > P_del2ben))
+  if( runif(1) < 1/50){
+    muts = sim.mutationsOfType(m1);
+    env_idx = p1.getValue('env_idx');
+    env_idx = env_idx+1; 
+    p1.setValue('env_idx',env_idx);
+    harshness = max(rnorm(1,1,0.15), 0.0);
+    p1.setValue('harshness',harshness);
+    for (mut in muts){
+      beneficial_P = mut.getValue('P_ben');
+      selcoeff_size = mut.getValue('selcoeff_size');
+      if (selcoeff_size == 0) // neutral mutation
+        next;
+      selcoeff_size_env = selcoeff_size * harshness;
+      selcoeff = rgamma(1,selcoeff_size_env,10);
+      if (runif(1) > beneficial_P)
         selcoeff = -selcoeff;
       mut.setSelectionCoeff(selcoeff);
     }
@@ -133,8 +123,6 @@ late() {
     i = 0;
     for (mut in mutation_set){
       beneficial_P = mut.getValue('P_ben');
-      if (beneficial_P > 0.0)
-        beneficial_P = 0.125;
       selcoeff_size = mut.getValue('selcoeff_size');
       if (selcoeff_size != 0){
         mut_mean_selcoeff = (1+selcoeff_size)^beneficial_P * (1-selcoeff_size)^(1-beneficial_P) - 1;

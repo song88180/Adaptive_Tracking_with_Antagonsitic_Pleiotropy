@@ -1,9 +1,8 @@
 initialize() {
   defineConstant("Ne",10000);
-  //defineConstant("interval",25);
-  defineConstant("P_ben_max",0.25);
+  //defineConstant("P_ben_max",0.25);
   //defineConstant("rep",1);
-  defineConstant("Name","quasi_int"+interval);
+  defineConstant("Name","AdapTrack_AP"+P_ben_max);
   defineConstant("Root","../Simulation_log");
   initializeMutationType("m1", 0.5, "f", 0.0); 
   initializeMutationType("m0", 0.5, "f", 0.0); 
@@ -40,7 +39,7 @@ early() {
   if( sim.generation % 1000 == 0)
     print(sim.generation);
 
-  if( runif(1) < 1/interval){
+  if( runif(1) < 1/50){
     muts = sim.mutationsOfType(m1);
     env_idx = p1.getValue('env_idx');
     env_idx = env_idx+1; 
